@@ -33,14 +33,14 @@ export default function TerminalAnimation() {
         if (currentText.length < fullText.length) {
             const timeout = setTimeout(() => {
                 setCurrentText(fullText.slice(0, currentText.length + 1));
-            }, 80); 
+            }, 100); 
             return () => clearTimeout(timeout);
         } else {
 
             const timeout = setTimeout(() => {
                 setCurrentText("");
                 setCurrentLine(currentLine + 1);
-            }, 100);
+            }, 200);
             return () => clearTimeout(timeout);
         }
     }, [currentText, currentLine]);
@@ -53,7 +53,7 @@ export default function TerminalAnimation() {
     }, []);
 
     return (
-        <div className="font-sk-modernist tracking-[.12em] text-md md:text-[1.2rem] m-10 backdrop-blur-md border border-white/20 rounded-2xl p-6 lg:w-[40vw] min-w-fit">
+        <div className="font-sk-modernist tracking-[.12em] text-[4vw] sm:text-[1.2rem] m-10 backdrop-blur-md border border-white/20 rounded-2xl p-6 lg:w-[40vw] min-w-fit">
 
             <div className="space-y-3">
                 {commands.slice(0, currentLine).map((cmd, idx) => (

@@ -29,7 +29,7 @@ export default function Navbar() {
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 px-8 py-4">
-            <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
+            <div className="flex items-center justify-between mx-auto">
                 <button 
                     className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors"
                     aria-label="Menu"
