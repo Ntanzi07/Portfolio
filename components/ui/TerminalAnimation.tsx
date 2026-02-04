@@ -57,7 +57,7 @@ export default function TerminalAnimation() {
         xl:text-[1.5rem] m-3 md:m-10 backdrop-blur-md border border-white/20 rounded-2xl py-6 px-2 md:px-6 
         w-full max-w-[90vw] lg:max-w-[40vw]">
 
-            <div className="flex flex-col-reverse space-y-reverse space-y-3 min-h-[200px] overflow-hidden">
+            <div className="flex flex-col-reverse space-y-reverse space-y-3 overflow-hidden">
                 {currentLine >= commands.length && (
                     <div className="cursor-magnetic flex items-center gap-1 px-5 mix-blend-difference break-words flex-wrap">
                         <span className="">nath@MyDescktop:</span>
