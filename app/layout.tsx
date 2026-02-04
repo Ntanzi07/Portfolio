@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Anton } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/ui/SmoothScroll";
+import CustomCursor from "@/components/ui/CustomCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${anton.variable} ${skModernist.variable} antialiased`}
       >
+        <CustomCursor />
         <SmoothScroll />
         {children}
       </body>

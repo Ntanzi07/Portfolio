@@ -31,7 +31,7 @@ export default function Navbar() {
         <nav className="fixed top-0 left-0 right-0 z-50 px-8 py-4">
             <div className="flex items-center justify-between mx-auto">
                 <button 
-                    className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors"
+                    className="cursor-magnetic flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-colors"
                     aria-label="Menu"
                 >
                     <svg 
@@ -48,12 +48,12 @@ export default function Navbar() {
                         <circle cx="12" cy="19" r="1" />
                     </svg>
                 </button>
-
-                <div className="text-white font-medium text-lg tracking-wide">
+ 
+                <div className="cursor-magnetic text-white font-medium text-lg tracking-wide px-5 rounded-2xl ">
                     {personalInfo.name}
                 </div>
 
-                <div className="flex items-center gap-2 text-white text-sm">
+                <div className="hidden md:flex relative cursor-magnetic  items-center gap-2 px-5 rounded-2xl text-white text-sm">
                     <span>{formatDate(currentTime)}</span>
                     <span className="font-mono">{formatTime(currentTime)}</span>
                 </div>
