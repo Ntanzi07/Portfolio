@@ -59,7 +59,7 @@ export default function TerminalAnimation() {
 
             <div className="flex flex-col-reverse space-y-reverse space-y-3 overflow-hidden">
                 {currentLine >= commands.length && (
-                    <div className="cursor-magnetic flex items-center gap-1 px-5 mix-blend-difference break-words flex-wrap">
+                    <div className="cursor-magnetic flex items-center gap-1 px-5 mix-blend-difference rounded-3xl break-words flex-wrap">
                         <span className="">nath@MyDescktop:</span>
                         <span className="">~</span>
                         {showCursor && <span className="">▌</span>}
@@ -67,7 +67,7 @@ export default function TerminalAnimation() {
                 )}
 
                 {currentLine < commands.length && (
-                    <div className="cursor-magnetic flex items-center gap-1 px-5 mix-blend-difference break-words flex-wrap">
+                    <div className="cursor-magnetic flex items-center gap-1 px-5 mix-blend-difference rounded-3xl break-words flex-wrap">
                         <span className="">nath@MyDescktop:</span>
                         <span className="">~</span>
                         <span className="break-all">{currentText}</span>
@@ -76,7 +76,7 @@ export default function TerminalAnimation() {
                 )}
 
                 {commands.slice(0, currentLine).reverse().map((cmd, idx) => (
-                    <div key={idx} className="cursor-magnetic space-y-1 px-5 mix-blend-difference w-full">
+                    <div key={idx} className="cursor-magnetic space-y-1 px-5 mix-blend-difference rounded-3xl w-full">
                         <div className="flex items-center gap-1 flex-wrap w-full overflow-hidden">
                             <span className="shrink-0">nath@MyDescktop:</span>
                             <span className="shrink-0">~</span>

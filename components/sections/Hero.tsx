@@ -26,8 +26,8 @@ export default function Hero() {
                 </div>
 
                 <div className="relative top-0 md:top-0 right-0 flex-1 h-fit md:h-screen flex items-center justify-end select-none" >
-                    <div className="relative h-fit text-blue-300 font-sk-modernist font-bold text-[13vw] 
-                    md:text-[3rem] lg:text-[4rem] xl:text-[6rem] leading-[1em] uppercase text-end z-10 p-8 mix-blend-difference hue-rotate-150">
+                    <div className="relative h-fit font-sk-modernist font-bold text-[13vw] md:text-[3rem] lg:text-[4rem] 
+                    xl:text-[6rem] leading-[1em] uppercase text-end z-10 p-8 mix-blend-difference hue-rotate-150 text-blue-300">
                         <h1>Computer Engineering</h1>
                     </div>
                 </div>
