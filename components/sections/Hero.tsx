@@ -1,20 +1,48 @@
+'use client';
+
 import { personalInfo } from "@/data/portfolio";
 import Image from "next/image";
 import TerminalAnimation from "@/components/ui/TerminalAnimation";
+import { useState, useEffect } from "react";
 
 export default function Hero() {
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            const x = -(e.clientX / window.innerWidth - 0.5) * 2;
+            const y = 0;
+            setMousePosition({ x, y });
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
     return (
         <section id="hero" className="relative h-[200vh]">
 
-            <div className="sticky top-0 inset-0 z-0 h-screen w-screen items-center mx-auto overflow-hidden">
+            <div className="sticky top-0 inset-0 z-0 h-screen w-screen items-center mx-auto">
                 <Image
-                    src="/Hero/Nathan.png"
-                    alt="Nathan Picture"
+                    src="/Hero/Nathan_bg.png"
+                    alt="Nathan BG"
                     fill
                     quality={100}
                     priority
                     unoptimized
                     className="object-cover grayscale-0 hue-rotate-0 brightness-120"
+                />
+                <Image
+                    src="/Hero/Nathan_nbg.png"
+                    alt="Nathan Picture"
+                    fill
+                    quality={100}
+                    priority
+                    unoptimized
+                    className="object-cover grayscale-0 hue-rotate-0 brightness-120 transition-transform duration-200 ease-out"
+                    style={{
+                        transform: `translate(${mousePosition.x * 15}px, ${mousePosition.y * 15}px)`
+                    }}
                 />
             </div>
 

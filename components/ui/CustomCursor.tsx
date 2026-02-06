@@ -9,6 +9,12 @@ interface CloneData {
   currentOpacity: number;
   currentX: number;
   currentY: number;
+  origTransform?: string;
+  currentOffsetX?: number;
+  currentOffsetY?: number;
+  offsetVelX?: number;
+  offsetVelY?: number;
+  wasActive?: boolean;
 }
 
 export default function CustomCursor() {
@@ -70,6 +76,12 @@ export default function CustomCursor() {
             currentOpacity: 0,
             currentX: centerX,
             currentY: centerY,
+            origTransform: window.getComputedStyle(element).transform || "",
+            currentOffsetX: 0,
+            currentOffsetY: 0,
+            offsetVelX: 0,
+            offsetVelY: 0,
+            wasActive: false,
           });
         }
       });
@@ -160,29 +172,11 @@ export default function CustomCursor() {
         const targetScale = isNear ? 1 : 0.3;
         const targetOpacity = isNear ? 1 : 0;
 
-        // Calcular posição do clone
-        let targetX, targetY;
-        if (isOver) {
-          if (isOver) {
-            // Pull
-            const dx = mouseX - centerX;
-            const dy = mouseY - centerY;
-            const maxPull = 10; // pixels por eixo
+        // Calcular posição do clone: sempre seguir o elemento (centro)
+        const targetX = centerX;
+        const targetY = centerY;
 
-            const pullX = Math.max(-maxPull, Math.min(dx, maxPull));
-            const pullY = Math.max(-maxPull, Math.min(dy, maxPull));
-
-            targetX = centerX + pullX;
-            targetY = centerY + pullY;
-          } else {
-            targetX = centerX;
-            targetY = centerY;
-          }
-        } else {
-          targetX = centerX;
-          targetY = centerY;
-        }
-
+        // Linear interpolation for scale/opactiy (no spring)
         data.currentScale += (targetScale - data.currentScale) * (isNear ? 0.2 : 0.15);
         data.currentOpacity += (targetOpacity - data.currentOpacity) * (isNear ? 0.2 : 0.15);
         data.currentX += (targetX - data.currentX) * 0.15;
@@ -194,6 +188,76 @@ export default function CustomCursor() {
         data.clone.style.height = `${rect.height}px`;
         data.clone.style.transform = `translate(-50%, -50%) scale(${data.currentScale})`;
         data.clone.style.opacity = `${data.currentOpacity}`;
+
+        // Magnetic behavior: pull when NEAR or OVER, with spring return when cursor leaves
+        const MAX_PULL = 30; // pixels max displacement when near
+        const OFFSET_LERP = 0.5; // how quickly it snaps toward the cursor when active
+
+        let proximity = 0;
+        if (isOver) {
+          proximity = 1;
+        } else if (isNear && effectivePadding > 0) {
+          proximity = 1 - Math.min(distance / effectivePadding, 1);
+        }
+
+        const rawX = mouseX - centerX;
+        const rawY = mouseY - centerY;
+        const targetOffsetX = proximity > 0 ? Math.max(-MAX_PULL, Math.min(rawX * proximity, MAX_PULL)) : 0;
+        const targetOffsetY = proximity > 0 ? Math.max(-MAX_PULL, Math.min(rawY * proximity, MAX_PULL)) : 0;
+
+        if (typeof data.currentOffsetX !== "number") data.currentOffsetX = 0;
+        if (typeof data.currentOffsetY !== "number") data.currentOffsetY = 0;
+        if (typeof data.offsetVelX !== "number") data.offsetVelX = 0;
+        if (typeof data.offsetVelY !== "number") data.offsetVelY = 0;
+        if (typeof data.wasActive !== "boolean") data.wasActive = false;
+
+        // detect release: was active but now isn't
+        const justReleased = data.wasActive && proximity === 0;
+
+        if (proximity > 0) {
+          // active pull: snap toward target
+          data.currentOffsetX += (targetOffsetX - data.currentOffsetX) * OFFSET_LERP;
+          data.currentOffsetY += (targetOffsetY - data.currentOffsetY) * OFFSET_LERP;
+          data.wasActive = true;
+        } else {
+          // spring return to zero with strong elastic oscillation
+          const SPRING_STIFFNESS = 0.25; // higher = stronger pull back
+          const SPRING_DAMPING = 0.35; // 0-1, lower = more oscillation/overshoot
+
+          // if just released, add strong opposite impulse
+          if (justReleased) {
+            data.offsetVelX = -data.currentOffsetX * 0.5;
+            data.offsetVelY = -data.currentOffsetY * 0.5;
+          }
+          
+          data.wasActive = false;
+
+          // X
+          const forceX = -SPRING_STIFFNESS * data.currentOffsetX;
+          data.offsetVelX += forceX;
+          data.offsetVelX *= SPRING_DAMPING;
+          data.currentOffsetX += data.offsetVelX;
+
+          // Y
+          const forceY = -SPRING_STIFFNESS * data.currentOffsetY;
+          data.offsetVelY += forceY;
+          data.offsetVelY *= SPRING_DAMPING;
+          data.currentOffsetY += data.offsetVelY;
+
+          // if very small, snap to exact zero to stop micro-oscillation
+          if (Math.abs(data.currentOffsetX) < 0.02) {
+            data.currentOffsetX = 0;
+            data.offsetVelX = 0;
+          }
+          if (Math.abs(data.currentOffsetY) < 0.02) {
+            data.currentOffsetY = 0;
+            data.offsetVelY = 0;
+          }
+        }
+
+        const base = data.origTransform && data.origTransform !== "none" ? data.origTransform : "";
+        const translate = ` translate(${data.currentOffsetX}px, ${data.currentOffsetY}px)`;
+        data.element.style.transform = `${base}${translate}`;
       }
 
       const ease = isOverElement ? 0.2 : 0.15;
@@ -254,7 +318,15 @@ export default function CustomCursor() {
       if (requestRef.current) {
         cancelAnimationFrame(requestRef.current);
       }
-      clonesMap.forEach((data) => data.clone.remove());
+      clonesMap.forEach((data) => {
+        // restore original transform
+        try {
+          data.element.style.transform = data.origTransform || "";
+        } catch (e) {
+          // ignore
+        }
+        data.clone.remove();
+      });
     };
   }, []);
 
@@ -279,7 +351,7 @@ export default function CustomCursor() {
 
       <div
         ref={containerRef}
-        className="pointer-events-none fixed inset-0 z-[9999]"
+        className="pointer-events-none fixed inset-0 z-[9999] hidden md:block"
         style={{
           filter: "url(#goo)",
           mixBlendMode: "difference",
@@ -290,7 +362,7 @@ export default function CustomCursor() {
           className="absolute hue-rotate-150"
           style={{
             transform: "translate(-50%, -50%)",
-            borderRadius: "9999px",
+            borderRadius: "100%",
             backgroundColor: `var(--color-blue-300)`,
             width: "20px",
             height: "20px",
