@@ -5,6 +5,7 @@ import { useState, useEffect, type CSSProperties, type ReactNode } from "react";
 
 export default function Hero() {
     const [scrollProgress, setScrollProgress] = useState(0);
+    const [isMdUp, setIsMdUp] = useState(false);
     type LabelSetting = {
         key: string;
         content: ReactNode;
@@ -82,6 +83,32 @@ export default function Hero() {
         WebkitMaskSize: "cover",
         maskSize: "cover",
     };
+    const viewportCutMaskStyle: CSSProperties = {
+        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 72%, transparent 100%)",
+        maskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 72%, transparent 100%)",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskSize: "100% 100%",
+        maskSize: "100% 100%",
+    };
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(min-width: 768px)');
+
+        const syncViewport = () => {
+            setIsMdUp(mediaQuery.matches);
+        };
+
+        syncViewport();
+
+        if (mediaQuery.addEventListener) {
+            mediaQuery.addEventListener('change', syncViewport);
+            return () => mediaQuery.removeEventListener('change', syncViewport);
+        }
+
+        mediaQuery.addListener(syncViewport);
+        return () => mediaQuery.removeListener(syncViewport);
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -133,12 +160,13 @@ export default function Hero() {
                     quality={100}
                     priority
                     unoptimized
-                    className="object-cover grayscale-0 hue-rotate-0 brightness-120"
+                    draggable={false}
+                    className="object-cover grayscale-0 hue-rotate-0 brightness-120 pointer-events-none select-none"
                 />
             </div>
 
             <div className="absolute inset-0 h-[300vh]">
-                <div className="sticky top-0 h-screen w-screen overflow-hidden pointer-events-none">
+                <div className="sticky top-0 h-screen w-screen overflow-hidden pointer-events-none" style={isMdUp ? viewportCutMaskStyle : undefined}>
                     <div className="absolute z-0 top-[90vh] md:top-1/2 right-0 h-2.5 w-2.5">
                         {labelSettings.map((item) => {
                             const angle = item.baseAngle + circleRotation;
@@ -168,7 +196,8 @@ export default function Hero() {
                             quality={100}
                             priority
                             unoptimized
-                            className="object-cover grayscale-0 hue-rotate-0 brightness-120"
+                            draggable={false}
+                            className="object-cover grayscale-0 hue-rotate-0 brightness-120 pointer-events-none select-none"
                         />
                     </div>
 
