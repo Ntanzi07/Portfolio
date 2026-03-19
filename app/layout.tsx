@@ -26,6 +26,21 @@ const skModernist = localFont({
   variable: "--font-sk-modernist",
 });
 
+const aura = localFont({
+  src: "../public/fonts/Aura/Aura.otf",
+  variable: "--font-aura",
+});
+
+const nura = localFont({
+  src: "../public/fonts/Nura/Nura Normal.otf",
+  variable: "--font-nura",
+});
+
+const solen = localFont({
+  src: "../public/fonts/Solen/Solen Semibold.otf",
+  variable: "--font-solen",
+});
+
 export const metadata: Metadata = {
   title: "My Portfolio",
   description: "Welcome to my personal portfolio website.",
@@ -39,7 +54,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${anton.variable} ${skModernist.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${anton.variable} ${skModernist.variable} ${aura.variable} ${nura.variable} ${solen.variable} antialiased`}
       >
         <CustomCursor />
         <SmoothScroll />
