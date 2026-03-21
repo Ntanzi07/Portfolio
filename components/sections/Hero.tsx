@@ -19,60 +19,67 @@ export default function Hero() {
     const labelSettings: LabelSetting[] = [
         {
             key: "Hello",
-            content: "Nice to meet you!",
+            content: (
+                <>
+                    <span className="not-italic font-normal">Hello, </span>
+                    <span className=" not-italic font-normal">Nice to </span>
+                    <span className=" italic font-bold">meet you!</span>
+                </>
+            ),
             fontFamily: "var(--font-solen)",
             weight: 600,
             baseAngle: 0,
-            sizeClasses: "text-[10vw] md:text-[6.7rem] lg:text-[7rem] xl:text-[10rem]",
+            sizeClasses: "text-[10vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
             className: "",
         },
         {
             key: "computer-engineering",
             content: (
                 <>
-                    <span className="italic font-bold">I'm a </span>
-                    <span className="not-italic font-normal">computer engineering</span>
+                    <span className="not-italic font-normal">I'm a </span>
+                    <span className="italic font-normal" style={{ fontFamily: "var(--font-nicholas) " }}>computer engineering</span>
                 </>
             ),
             fontFamily: "var(--font-solen)",
             weight: 600,
             baseAngle: -30,
-            sizeClasses: "text-[10vw] md:text-[6.7rem] lg:text-[7rem] xl:text-[10rem]",
+            sizeClasses: "text-[12vw] md:text-[6.7rem] lg:text-[7rem] xl:text-[10rem]",
             className: "",
         },
         {
             key: "software-developer",
             content: (
                 <>
-                    <span className="italic  font-bold">I'm a </span>
+                    <span className="not-italic font-normal">I'm a </span>
                     <span className="not-italic font-normal">software developer</span>
                 </>
             ),
-            fontFamily: "var(--font-nura)",
-            weight: 500,
+            fontFamily: "var(--font-herkey)",
+            weight: 300,
             baseAngle: -60,
-            sizeClasses: "text-[10vw] md:text-[4rem] lg:text-[5rem] xl:text-[8rem]",
+            sizeClasses: "text-[15vw] md:text-[4rem] lg:text-[5rem] xl:text-[9rem]",
             className: "",
         },
         {
             key: "im-nathan-tanzi",
             content: (
                 <>
-                    <span className="italic font-bold">I'm </span>
-                    <span className="not-italic font-normal">Nathan Tanzi</span>
+                    <span className="not-italic font-normal">I'm </span>
+                    <span className="italic font-normal">Nathan Tanzi.</span>
                 </>
             ),
-            fontFamily: "var(--font-aura)",
+            fontFamily: "var(--font-moglan)",
             weight: 400,
             baseAngle: -90,
-            sizeClasses: "text-[15vw] md:text-[6.7rem] lg:text-[8rem] xl:text-[12rem]",
+            sizeClasses: "text-[13vw] md:text-[6.7rem] lg:text-[8rem] xl:text-[12rem] 2xl:text-[15rem]",
             className: "normal-case",
         },
     ];
-    const maxScrollForRotation = 0.8; // Rotação termina em 80% do scroll
+    const maxScrollForRotation = 0.8;
     const cappedProgress = Math.min(scrollProgress / maxScrollForRotation, 1);
     const circleRotation = cappedProgress * 90;
-    const outlineStrokeWidth = "clamp(0.6px, 0.13vw, 2px)";
+    const centerHoldDegrees = 8;
+    const outlineStrokeWidth = "clamp(0.7px, 0.13vw, 2px)";
     const silhouetteMaskStyle: CSSProperties = {
         WebkitMaskImage: "url('/Hero/Nathan_nbg.png')",
         maskImage: "url('/Hero/Nathan_nbg.png')",
@@ -138,6 +145,11 @@ export default function Hero() {
         return Math.max(0, 1 - distance / 20);
     };
 
+    const getHeldAngle = (angle: number) => {
+        if (Math.abs(angle) <= centerHoldDegrees) return 0;
+        return angle > 0 ? angle - centerHoldDegrees : angle + centerHoldDegrees;
+    };
+
     const getLabelStyle = (angle: number, reveal: number): CSSProperties => ({
         opacity: reveal,
         transform: `translate(-100%, -50%) rotate(${angle}deg)`,
@@ -167,9 +179,9 @@ export default function Hero() {
 
             <div className="absolute inset-0 h-[300vh]">
                 <div className="sticky top-0 h-screen w-screen overflow-hidden pointer-events-none" style={isMdUp ? viewportCutMaskStyle : undefined}>
-                    <div className="absolute z-0 top-[90vh] md:top-1/2 right-0 h-2.5 w-2.5">
+                    <div className="absolute z-0 top-1/2 right-0 h-2.5 w-2.5">
                         {labelSettings.map((item) => {
-                            const angle = item.baseAngle + circleRotation;
+                            const angle = getHeldAngle(item.baseAngle + circleRotation);
                             const reveal = getRevealProgress(angle);
 
                             return (
@@ -202,9 +214,9 @@ export default function Hero() {
                     </div>
 
                     <div className="absolute inset-0 z-10" style={silhouetteMaskStyle}>
-                        <div className="absolute z-10 top-[90vh] md:top-1/2 right-0 h-2.5 w-2.5">
+                        <div className="absolute z-10 top-1/2 right-0 h-2.5 w-2.5">
                             {labelSettings.map((item) => {
-                                const angle = item.baseAngle + circleRotation;
+                                const angle = getHeldAngle(item.baseAngle + circleRotation);
                                 const reveal = getRevealProgress(angle);
 
                                 return (

@@ -26,9 +26,14 @@ const skModernist = localFont({
   variable: "--font-sk-modernist",
 });
 
-const aura = localFont({
-  src: "../public/fonts/Aura/Aura.otf",
-  variable: "--font-aura",
+const nicholas = localFont({
+  src: "../public/fonts/nicholas/Nicholas.otf",
+  variable: "--font-nicholas",
+});
+
+const herkey = localFont({
+  src: "../public/fonts/herkey/Herkey TTF.ttf",
+  variable: "--font-herkey",
 });
 
 const nura = localFont({
@@ -39,6 +44,11 @@ const nura = localFont({
 const solen = localFont({
   src: "../public/fonts/Solen/Solen Semibold.otf",
   variable: "--font-solen",
+});
+
+const moglan = localFont({
+  src: "../public/fonts/moglan/Moglan_DEMO.ttf",
+  variable: "--font-moglan",
 });
 
 export const metadata: Metadata = {
@@ -54,7 +64,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${anton.variable} ${skModernist.variable} ${aura.variable} ${nura.variable} ${solen.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${anton.variable} ${skModernist.variable} ${nicholas.variable} ${herkey.variable} ${nura.variable} ${solen.variable} ${moglan.variable} antialiased`}
       >
         <CustomCursor />
         <SmoothScroll />
