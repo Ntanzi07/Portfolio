@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useState, useEffect, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useState, useEffect, type CSSProperties, type ReactNode } from "react";
 
 export default function Hero() {
     const [scrollProgress, setScrollProgress] = useState(0);
@@ -9,10 +9,12 @@ export default function Hero() {
     type LabelSetting = {
         key: string;
         content: ReactNode;
+        staticPrefix?: ReactNode;
         fontFamily: string;
         weight: number;
         baseAngle: number;
         sizeClasses: string;
+        sizeClassesSub: string,
         className: string;
     };
 
@@ -21,57 +23,61 @@ export default function Hero() {
             key: "Hello",
             content: (
                 <>
-                    <span className="not-italic font-normal">Hello, </span>
                     <span className=" not-italic font-normal">Nice to </span>
                     <span className=" italic font-bold">meet you!</span>
                 </>
             ),
+            staticPrefix: <span className="not-italic font-normal">Hello!</span>,
             fontFamily: "var(--font-solen)",
             weight: 600,
             baseAngle: 0,
-            sizeClasses: "text-[10vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
+            sizeClasses: "leading-[.8em] text-[19vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
+            sizeClassesSub: "leading-[.9em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
             className: "",
         },
         {
             key: "computer-engineering",
             content: (
                 <>
-                    <span className="not-italic font-normal">I'm a </span>
                     <span className="italic font-normal" style={{ fontFamily: "var(--font-nicholas) " }}>computer engineering</span>
                 </>
             ),
+            staticPrefix: <span className="not-italic font-normal">I'm a </span>,
             fontFamily: "var(--font-solen)",
             weight: 600,
             baseAngle: -30,
-            sizeClasses: "text-[12vw] md:text-[6.7rem] lg:text-[7rem] xl:text-[10rem]",
+            sizeClasses: "leading-[.7em] text-[22vw] md:text-[10rem] lg:text-[12rem] xl:text-[12rem]",
+            sizeClassesSub: "leading-[.9em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
             className: "",
         },
         {
             key: "software-developer",
             content: (
                 <>
-                    <span className="not-italic font-normal">I'm a </span>
                     <span className="not-italic font-normal">software developer</span>
                 </>
             ),
+            staticPrefix: <span className="not-italic font-normal">I'm a </span>,
             fontFamily: "var(--font-herkey)",
             weight: 300,
             baseAngle: -60,
-            sizeClasses: "text-[15vw] md:text-[4rem] lg:text-[5rem] xl:text-[9rem]",
+            sizeClasses: "leading-[.8em] text-[20vw] md:text-[10rem] lg:text-[8rem] xl:text-[12rem]",
+            sizeClassesSub: "leading-[.9em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
             className: "",
         },
         {
             key: "im-nathan-tanzi",
             content: (
                 <>
-                    <span className="not-italic font-normal">I'm </span>
                     <span className="italic font-normal">Nathan Tanzi.</span>
                 </>
             ),
+            staticPrefix: <span className="italic font-normal">I'm </span>,
             fontFamily: "var(--font-moglan)",
             weight: 400,
             baseAngle: -90,
-            sizeClasses: "text-[13vw] md:text-[6.7rem] lg:text-[8rem] xl:text-[12rem] 2xl:text-[15rem]",
+            sizeClasses: "leading-[.8em] text-[27vw] md:text-[8rem] lg:text-[10rem] xl:text-[12rem] 2xl:text-[15rem]",
+            sizeClassesSub: "leading-[.9em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem] left-[0vw] md:left-[-5vw]",
             className: "normal-case",
         },
     ];
@@ -91,8 +97,8 @@ export default function Hero() {
         maskSize: "cover",
     };
     const viewportCutMaskStyle: CSSProperties = {
-        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 72%, transparent 100%)",
-        maskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 72%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 35%, transparent 72%, transparent 100%)",
+        maskImage: "linear-gradient(to bottom, black 0%, black 35%, transparent 72%, transparent 100%)",
         WebkitMaskRepeat: "no-repeat",
         maskRepeat: "no-repeat",
         WebkitMaskSize: "100% 100%",
@@ -150,10 +156,13 @@ export default function Hero() {
         return angle > 0 ? angle - centerHoldDegrees : angle + centerHoldDegrees;
     };
 
-    const getLabelStyle = (angle: number, reveal: number): CSSProperties => ({
+    const getLabelStyle = (angle: number, reveal: number, stackBelow: boolean): CSSProperties => ({
         opacity: reveal,
-        transform: `translate(-100%, -50%) rotate(${angle}deg)`,
-        transformOrigin: '150vw center',
+        top: stackBelow ? '50%' : undefined,
+        transform: stackBelow
+            ? `translate(-100%, 0%) rotate(${angle}deg)`
+            : `translate(-100%, -50%) rotate(${angle}deg)`,
+        transformOrigin: stackBelow ? '150vw top' : '150vw center',
     });
 
     const getLabelFontStyle = (fontFamily: string, weight: number): CSSProperties => ({
@@ -179,23 +188,38 @@ export default function Hero() {
 
             <div className="absolute inset-0 h-[300vh]">
                 <div className="sticky top-0 h-screen w-screen overflow-hidden pointer-events-none" style={isMdUp ? viewportCutMaskStyle : undefined}>
-                    <div className="absolute z-0 top-1/2 right-0 h-2.5 w-2.5">
+                        <div className="absolute z-0 top-[75%] right-0 h-2.5 w-2.5 md:top-[42%]">
                         {labelSettings.map((item) => {
                             const angle = getHeldAngle(item.baseAngle + circleRotation);
                             const reveal = getRevealProgress(angle);
 
                             return (
-                                <span
-                                    key={item.key}
-                                    className={`absolute w-screen ${item.sizeClasses} ${item.className} leading-[1em] text-end mix-blend-difference 
-                                    hue-rotate-150 text-white transition-all duration-500 ease-out`}
-                                    style={{
-                                        ...getLabelStyle(angle, reveal),
-                                        ...getLabelFontStyle(item.fontFamily, item.weight),
-                                    }}
-                                >
-                                    {item.content}
-                                </span>
+                                <Fragment key={item.key}>
+                                    {item.staticPrefix ? (
+                                        <span
+                                            className={`absolute w-screen ${item.sizeClassesSub} ${item.className} text-end mix-blend-difference hue-rotate-150 text-white transition-all duration-500 ease-out`}
+                                            style={{
+                                                opacity: reveal,
+                                                top: '50%',
+                                                transform: 'translate(-100%, -100%)',
+                                                ...getLabelFontStyle(item.fontFamily, item.weight),
+                                            }}
+                                        >
+                                            {item.staticPrefix}
+                                        </span>
+                                    ) : null}
+
+                                    <span
+                                        className={`absolute w-screen ${item.sizeClasses} ${item.className} text-end mix-blend-difference 
+                                        hue-rotate-150 text-white transition-all duration-500 ease-out`}
+                                        style={{
+                                            ...getLabelStyle(angle, reveal, Boolean(item.staticPrefix)),
+                                            ...getLabelFontStyle(item.fontFamily, item.weight),
+                                        }}
+                                    >
+                                        {item.content}
+                                    </span>
+                                </Fragment>
                             );
                         })}
                     </div>
@@ -214,25 +238,41 @@ export default function Hero() {
                     </div>
 
                     <div className="absolute inset-0 z-10" style={silhouetteMaskStyle}>
-                        <div className="absolute z-10 top-1/2 right-0 h-2.5 w-2.5">
+                            <div className="absolute z-10 top-[75%] right-0 h-2.5 w-2.5 md:top-[42%]">
                             {labelSettings.map((item) => {
                                 const angle = getHeldAngle(item.baseAngle + circleRotation);
                                 const reveal = getRevealProgress(angle);
 
                                 return (
-                                    <span
-                                        key={`${item.key}-outline`}
-                                        className={`absolute w-screen ${item.sizeClasses} ${item.className} leading-[1em]
-                                        text-end transition-all duration-500 ease-out`}
-                                        style={{
-                                            ...getLabelStyle(angle, reveal),
-                                            ...getLabelFontStyle(item.fontFamily, item.weight),
-                                            color: 'transparent',
-                                            WebkitTextStroke: `${outlineStrokeWidth} rgb(255 255 255)`,
-                                        }}
-                                    >
-                                        {item.content}
-                                    </span>
+                                    <Fragment key={`${item.key}-outline`}>
+                                        {item.staticPrefix ? (
+                                            <span
+                                                className={`absolute w-screen ${item.sizeClassesSub} ${item.className} text-end mix-blend-difference hue-rotate-150 text-white transition-all duration-500 ease-out`}
+                                                style={{
+                                                    opacity: reveal,
+                                                    top: '50%',
+                                                    transform: 'translate(-100%, -100%)',
+                                                    ...getLabelFontStyle(item.fontFamily, item.weight),
+                                                    color: 'transparent',
+                                                    WebkitTextStroke: `${outlineStrokeWidth} rgb(255 255 255)`,
+                                                }}
+                                            >
+                                                {item.staticPrefix}
+                                            </span>
+                                        ) : null}
+                                        <span
+                                            className={`absolute w-screen ${item.sizeClasses} ${item.className}
+                                            text-end transition-all duration-500 ease-out`}
+                                            style={{
+                                                ...getLabelStyle(angle, reveal, Boolean(item.staticPrefix)),
+                                                ...getLabelFontStyle(item.fontFamily, item.weight),
+                                                color: 'transparent',
+                                                WebkitTextStroke: `${outlineStrokeWidth} rgb(255 255 255)`,
+                                            }}
+                                        >
+                                            {item.content}
+                                        </span>
+                                    </Fragment>
                                 );
                             })}
                         </div>
