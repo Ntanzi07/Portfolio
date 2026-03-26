@@ -6,6 +6,7 @@ import { Fragment, useState, useEffect, type CSSProperties, type ReactNode } fro
 export default function Hero() {
     const [scrollProgress, setScrollProgress] = useState(0);
     const [isMdUp, setIsMdUp] = useState(false);
+    const [headerBottomOffset, setHeaderBottomOffset] = useState(0);
     type LabelSetting = {
         key: string;
         content: ReactNode;
@@ -87,8 +88,71 @@ export default function Hero() {
     const centerHoldDegrees = 20;
     const frameAnimationStart = 0.84;
     const frameAnimationProgress = Math.min(Math.max((scrollProgress - frameAnimationStart) / (1 - frameAnimationStart), 0), 1);
-    const frameScale = 1 - (frameAnimationProgress * 0.3);
+    const frameScale = 1 - (frameAnimationProgress * 0.48);
     const frameRadiusPx = frameAnimationProgress * 36;
+
+    // Quando o bottom do header (section) encosta na bottom da viewport,
+    // `headerBottomOffset` vira >0. Mapear esse offset pela altura da
+    // viewport faz com que o progresso vá até 1 quando o bottom alcançar o top.
+    const articlesMoveProgress = typeof window !== 'undefined'
+        ? Math.min(Math.max(headerBottomOffset / window.innerHeight, 0), 1)
+        : 0;
+    const backgroundArticles = [
+        {
+            title: 'Capa — Design',
+            paragraphs: [
+                `Nice to meet you! I'm Nathan, a Computer Engineering student at Facens and an NEA Engineering intern at 
+                Splice Group (Votorantim). I'm focused on backend development, currently diving deeper into Golang, and I 
+                have a solid foundation in Java and C++. I build APIs, integrate services, and also work with frontend using 
+                React, as well as websites and mobile apps developed in Java.`,
+                `In my internship, I collaborate with the operations team and translate real-world processes into digital solutions. 
+                    This experience has helped me strengthen my technical skills, communication, and problem-solving abilities.`,
+                `I'm looking for opportunities to grow as a backend developer, bring my full-stack perspective to real projects, 
+                    and continue improving my English until reaching full fluency. Open to advanced internships and entry-level roles.`
+            ]
+        },
+        {
+            title: 'Coluna — Código',
+            paragraphs: [
+                `Besides programming, music is a big part of my life.
+                    I play acoustic guitar and piano in my free time.
+                    I also enjoy creating and remixing songs.
+                    One of my favorite styles is deep house music.
+                    Music helps me relax and express my creativity.`,
+            ],
+        },
+        {
+            title: 'Reportagem — Produto',
+            paragraphs: [
+                `I am a calm and quiet person.
+                    I like spending time with people I care about.
+                    I feel really happy when I am with someone I love.
+                    I also value personal growth and self-improvement.
+                    I always try to become a better version of myself.`,
+            ],
+        },
+        {
+            title: 'Editorial',
+            paragraphs: [
+                `I have experience working with Java and Node.js.
+                    I like creating APIs and designing backend systems.
+                    I also enjoy solving problems and thinking logically.
+                    Building scalable and efficient applications is something I am always improving.
+                    I am constantly studying to become a better developer every day.`,
+            ],
+        },
+        {
+            title: 'Editorial',
+            paragraphs: [
+                `I have experience working with Java and Node.js.
+                    I like creating APIs and designing backend systems.
+                    I also enjoy solving problems and thinking logically.
+                    Building scalable and efficient applications is something I am always improving.
+                    I am constantly studying to become a better developer every day.`,
+            ],
+        },
+    ];
+    const autoIndex = 0; // fixed — no auto-rotation
     const heroFrameStyle: CSSProperties = {
         transform: `scale(${frameScale})`,
         borderRadius: `${frameRadiusPx}px`,
@@ -144,7 +208,11 @@ export default function Hero() {
             const traveled = Math.min(Math.max(-rect.top, 0), scrollableDistance);
             const progress = scrollableDistance > 0 ? traveled / scrollableDistance : 0;
 
+            // bottomOffset > 0 quando o bottom do section vai além do bottom da viewport
+            const bottomOffset = Math.max(0, window.innerHeight - rect.bottom);
+
             setScrollProgress(progress);
+            setHeaderBottomOffset(bottomOffset);
         };
 
         handleScroll();
@@ -186,9 +254,78 @@ export default function Hero() {
     });
 
     return (
-        <section id="hero" className="relative h-[400vh]">
+        <section id="hero" className="relative h-[400vh] bg-black">
 
-            <div className="sticky top-0 inset-0 z-0 h-screen w-screen items-center mx-auto" style={heroFrameStyle}>
+            <div className="sticky top-20 inset-0 z-10 h-screen w-screen overflow-hidden bg-black pointer-events-none">
+                <div className="relative h-full w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-rows-6 md:grid-rows-5 gap-6">
+                    {/* text-1 */}
+                    <article className="px-4 text-white whitespace-normal hyphens-auto 
+                    lg:col-start-1 lg:col-span-1 lg:row-start-1 lg:row-span-2"
+                        style={{
+                            transform: `translateY(${articlesMoveProgress * 2000}px)`,
+                            transition: 'transform 300ms ease-out',
+                            willChange: 'transform'
+                        }}>
+                        <h4 className="text-[10px] md:text-xs font-bold uppercase tracking-wide mb-2">{backgroundArticles[0].title}</h4>
+                        {backgroundArticles[0].paragraphs.map((p, i) => (
+                            <p key={i} className="text-[2vw] md:text-[12px] lg:text-[12px] mb-2 text-justify">{p}</p>
+                        ))}
+                    </article>
+
+                    {/* text-2 */}
+                    <article className="px-4 text-white whitespace-normal hyphens-auto
+                     lg:col-start-2 lg:col-span-1 lg:row-start-1 lg:row-span-2"
+                        style={{
+                            transform: `translateY(${articlesMoveProgress * 1500}px)`,
+                            transition: 'transform 300ms ease-out', willChange: 'transform'
+                        }}>
+                        <h4 className="text-[10px] md:text-xs font-bold uppercase tracking-wide mb-2">{backgroundArticles[1].title}</h4>
+                        {backgroundArticles[1].paragraphs.map((p, i) => (
+                            <p key={i} className="text-[2vw] md:text-[12px] lg:text-[15px] mb-2 text-justify">{p}</p>
+                        ))}
+                    </article>
+
+                    {/* text-3 */}
+                    <article className="px-4 text-white text-right whitespace-normal
+                     lg:col-start-4 lg:col-span-1 lg:row-start-2 lg:row-span-3 row-start-1 "
+                        style={{
+                            transform: `translateY(${articlesMoveProgress * 1800}px)`,
+                            transition: 'transform 300ms ease-out', willChange: 'transform'
+                        }}>
+                        <h4 className="text-[10px] md:text-xs font-bold uppercase tracking-wide mb-2">{backgroundArticles[2].title}</h4>
+                        {backgroundArticles[2].paragraphs.map((p, i) => (
+                            <p key={i} className="text-[2vw] md:text-[12px] lg:text-[15px] mb-2 text-justify">{p}</p>
+                        ))}
+                    </article>
+
+                    {/* text-4 */}
+                    <article className="px-4 text-white whitespace-normal hyphens-auto
+                     lg:col-start-1 md:col-span-1 lg:row-start-4 lg:row-span-2 row-start-3 "
+                        style={{
+                            transform: `translateY(${articlesMoveProgress * 2000}px)`,
+                            transition: 'transform 300ms ease-out', willChange: 'transform'
+                        }}>
+                        <h4 className="text-[10px] md:text-xs font-bold uppercase tracking-wide mb-2">{backgroundArticles[3].title}</h4>
+                        {backgroundArticles[3].paragraphs.map((p, i) => (
+                            <p key={i} className="text-[2vw] md:text-[12px] lg:text-[15px] mb-2 text-justify">{p}</p>
+                        ))}
+                    </article>
+
+                    <article className="px-4 text-white whitespace-normal hyphens-auto
+                     md:col-start-3 md:col-span-1 md:row-start-4 md:row-span-2 row-start-4 col-start-2"
+                        style={{
+                            transform: `translateY(${articlesMoveProgress * 2000}px)`,
+                            transition: 'transform 300ms ease-out', willChange: 'transform'
+                        }}>
+                        <h4 className="text-[10px] md:text-xs font-bold uppercase tracking-wide mb-2">{backgroundArticles[3].title}</h4>
+                        {backgroundArticles[3].paragraphs.map((p, i) => (
+                            <p key={i} className="text-[2vw] md:text-[12px] lg:text-[15px] mb-2 text-justify">{p}</p>
+                        ))}
+                    </article>
+                </div>
+            </div>
+
+            <div className="sticky top-0 inset-0 z-10 h-screen w-screen items-center mx-auto" style={heroFrameStyle}>
                 <Image
                     src="/Hero/Nathan.png"
                     alt="Nathan BG"
@@ -201,12 +338,12 @@ export default function Hero() {
                 />
             </div>
 
-            <div className="absolute inset-0 h-[400vh]">
+            <div className="absolute inset-0 z-20 h-[400vh]">
                 <div
                     className="sticky top-0 h-screen w-screen overflow-hidden pointer-events-none"
                     style={isMdUp ? { ...heroFrameStyle, ...viewportCutMaskStyle } : heroFrameStyle}
                 >
-                        <div className="absolute z-0 top-[75%] right-0 h-2.5 w-2.5 md:top-[42%]">
+                    <div className="absolute z-0 top-[75%] right-0 h-2.5 w-2.5 md:top-[42%]">
                         {labelSettings.map((item) => {
                             const angle = getHeldAngle(item.baseAngle + circleRotation);
                             const reveal = getRevealProgress(angle);
@@ -257,7 +394,7 @@ export default function Hero() {
                     </div>
 
                     <div className="absolute inset-0 z-10" style={silhouetteMaskStyle}>
-                            <div className="absolute z-10 top-[75%] right-0 h-2.5 w-2.5 md:top-[42%]">
+                        <div className="absolute z-10 top-[75%] right-0 h-2.5 w-2.5 md:top-[42%]">
                             {labelSettings.map((item) => {
                                 const angle = getHeldAngle(item.baseAngle + circleRotation);
                                 const reveal = getRevealProgress(angle);
