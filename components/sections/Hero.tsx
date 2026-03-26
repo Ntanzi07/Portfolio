@@ -31,7 +31,7 @@ export default function Hero() {
             fontFamily: "var(--font-solen)",
             weight: 600,
             baseAngle: 0,
-            sizeClasses: "leading-[.8em] text-[19vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
+            sizeClasses: "leading-[.8em] text-[19vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[12rem]",
             sizeClassesSub: "leading-[.9em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
             className: "",
         },
@@ -45,9 +45,9 @@ export default function Hero() {
             staticPrefix: <span className="not-italic font-normal">I'm a </span>,
             fontFamily: "var(--font-solen)",
             weight: 600,
-            baseAngle: -30,
+            baseAngle: -60,
             sizeClasses: "leading-[.7em] text-[22vw] md:text-[10rem] lg:text-[12rem] xl:text-[12rem]",
-            sizeClassesSub: "leading-[.9em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
+            sizeClassesSub: "leading-[.8em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
             className: "",
         },
         {
@@ -60,9 +60,9 @@ export default function Hero() {
             staticPrefix: <span className="not-italic font-normal">I'm a </span>,
             fontFamily: "var(--font-herkey)",
             weight: 300,
-            baseAngle: -60,
-            sizeClasses: "leading-[.8em] text-[20vw] md:text-[10rem] lg:text-[8rem] xl:text-[12rem]",
-            sizeClassesSub: "leading-[.9em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
+            baseAngle: -120,
+            sizeClasses: "leading-[.7em] text-[20vw] md:text-[10rem] lg:text-[8rem] xl:text-[12rem]",
+            sizeClassesSub: "leading-[.5em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem]",
             className: "",
         },
         {
@@ -75,16 +75,27 @@ export default function Hero() {
             staticPrefix: <span className="italic font-normal">I'm </span>,
             fontFamily: "var(--font-moglan)",
             weight: 400,
-            baseAngle: -90,
-            sizeClasses: "leading-[.8em] text-[27vw] md:text-[8rem] lg:text-[10rem] xl:text-[12rem] 2xl:text-[15rem]",
-            sizeClassesSub: "leading-[.9em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[8rem] left-[0vw] md:left-[-5vw]",
+            baseAngle: -180,
+            sizeClasses: "leading-[.8em] text-[27vw] md:text-[8rem] lg:text-[10rem] xl:text-[12rem] 2xl:text-[18rem]",
+            sizeClassesSub: "leading-[.2em] text-[16vw] md:text-[4.7rem] lg:text-[6rem] xl:text-[10rem] left-[0vw] md:left-[-5vw]",
             className: "normal-case",
         },
     ];
     const maxScrollForRotation = 0.8;
     const cappedProgress = Math.min(scrollProgress / maxScrollForRotation, 1);
-    const circleRotation = cappedProgress * 90;
-    const centerHoldDegrees = 8;
+    const circleRotation = cappedProgress * 180;
+    const centerHoldDegrees = 20;
+    const frameAnimationStart = 0.84;
+    const frameAnimationProgress = Math.min(Math.max((scrollProgress - frameAnimationStart) / (1 - frameAnimationStart), 0), 1);
+    const frameScale = 1 - (frameAnimationProgress * 0.3);
+    const frameRadiusPx = frameAnimationProgress * 36;
+    const heroFrameStyle: CSSProperties = {
+        transform: `scale(${frameScale})`,
+        borderRadius: `${frameRadiusPx}px`,
+        overflow: 'hidden',
+        transformOrigin: 'center center',
+        willChange: 'transform, border-radius',
+    };
     const outlineStrokeWidth = "clamp(0.7px, 0.13vw, 2px)";
     const silhouetteMaskStyle: CSSProperties = {
         WebkitMaskImage: "url('/Hero/Nathan_nbg.png')",
@@ -97,8 +108,8 @@ export default function Hero() {
         maskSize: "cover",
     };
     const viewportCutMaskStyle: CSSProperties = {
-        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 35%, transparent 72%, transparent 100%)",
-        maskImage: "linear-gradient(to bottom, black 0%, black 35%, transparent 72%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 80%, transparent 100%)",
+        maskImage: "linear-gradient(to bottom, black 0%, black 45%, transparent 80%, transparent 100%)",
         WebkitMaskRepeat: "no-repeat",
         maskRepeat: "no-repeat",
         WebkitMaskSize: "100% 100%",
@@ -148,7 +159,11 @@ export default function Hero() {
 
     const getRevealProgress = (angle: number) => {
         const distance = Math.abs(angle);
-        return Math.max(0, 1 - distance / 20);
+        return Math.max(0, 1 - distance / 35);
+    };
+
+    const getStaticPrefixOpacity = (angle: number) => {
+        return Math.abs(angle) <= 8 ? 1 : 0;
     };
 
     const getHeldAngle = (angle: number) => {
@@ -171,9 +186,9 @@ export default function Hero() {
     });
 
     return (
-        <section id="hero" className="relative h-[300vh]">
+        <section id="hero" className="relative h-[400vh]">
 
-            <div className="sticky top-0 inset-0 z-0 h-screen w-screen items-center mx-auto">
+            <div className="sticky top-0 inset-0 z-0 h-screen w-screen items-center mx-auto" style={heroFrameStyle}>
                 <Image
                     src="/Hero/Nathan.png"
                     alt="Nathan BG"
@@ -186,12 +201,16 @@ export default function Hero() {
                 />
             </div>
 
-            <div className="absolute inset-0 h-[300vh]">
-                <div className="sticky top-0 h-screen w-screen overflow-hidden pointer-events-none" style={isMdUp ? viewportCutMaskStyle : undefined}>
+            <div className="absolute inset-0 h-[400vh]">
+                <div
+                    className="sticky top-0 h-screen w-screen overflow-hidden pointer-events-none"
+                    style={isMdUp ? { ...heroFrameStyle, ...viewportCutMaskStyle } : heroFrameStyle}
+                >
                         <div className="absolute z-0 top-[75%] right-0 h-2.5 w-2.5 md:top-[42%]">
                         {labelSettings.map((item) => {
                             const angle = getHeldAngle(item.baseAngle + circleRotation);
                             const reveal = getRevealProgress(angle);
+                            const staticPrefixOpacity = getStaticPrefixOpacity(angle);
 
                             return (
                                 <Fragment key={item.key}>
@@ -199,7 +218,7 @@ export default function Hero() {
                                         <span
                                             className={`absolute w-screen ${item.sizeClassesSub} ${item.className} text-end mix-blend-difference hue-rotate-150 text-white transition-all duration-500 ease-out`}
                                             style={{
-                                                opacity: reveal,
+                                                opacity: staticPrefixOpacity,
                                                 top: '50%',
                                                 transform: 'translate(-100%, -100%)',
                                                 ...getLabelFontStyle(item.fontFamily, item.weight),
@@ -242,6 +261,7 @@ export default function Hero() {
                             {labelSettings.map((item) => {
                                 const angle = getHeldAngle(item.baseAngle + circleRotation);
                                 const reveal = getRevealProgress(angle);
+                                const staticPrefixOpacity = getStaticPrefixOpacity(angle);
 
                                 return (
                                     <Fragment key={`${item.key}-outline`}>
@@ -249,7 +269,7 @@ export default function Hero() {
                                             <span
                                                 className={`absolute w-screen ${item.sizeClassesSub} ${item.className} text-end mix-blend-difference hue-rotate-150 text-white transition-all duration-500 ease-out`}
                                                 style={{
-                                                    opacity: reveal,
+                                                    opacity: staticPrefixOpacity,
                                                     top: '50%',
                                                     transform: 'translate(-100%, -100%)',
                                                     ...getLabelFontStyle(item.fontFamily, item.weight),
