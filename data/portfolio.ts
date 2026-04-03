@@ -12,7 +12,11 @@ export const personalInfo = {
 };
 
 export const about = {
-  bio: "I'm a full stack developer with a passion for creating beautiful, functional, and user-friendly applications. I love learning new technologies and solving complex problems.",
+  bio: `I'm Nathan, a Computer Engineering student at Facens and an NEA Engineering intern at Splice Group (Votorantim). 
+  I'm focused on backend development, currently diving deeper into Golang, and I have a solid foundation in Java and C++. 
+  I build APIs, integrate services, and also work with frontend using React, as well as websites and mobile apps developed in Java.
+
+  `,
   highlights: [
     "5+ years of experience in web development",
     "Specialized in React and Node.js",

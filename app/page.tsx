@@ -11,9 +11,11 @@ export default function Home() {
       <Navbar />
       <Hero />
       <About />
-      <Projects />
-      <Skills />
-      <Contact />
+      <div className="relative z-20 -mt-[100vh] bg-white dark:bg-black">
+        <Projects />
+        <Skills />
+        <Contact />
+      </div>
     </div>
   );
 }

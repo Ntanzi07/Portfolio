@@ -1,51 +1,188 @@
+'use client'
+import { useEffect, useMemo, useRef, useState } from "react";
 import { about } from "@/data/portfolio";
-import Image from "next/image";
-import TerminalAnimation from "../ui/TerminalAnimation";
-import ScalableImage from "../ui/ScalableImage";
 
 export default function About() {
-  return (
-    <section id="about" className="relative bg-[#0a0a0a]">
-      <div className="relative  mx-auto flex items-center gap-12 h-screen">
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [activeSection, setActiveSection] = useState(0);
+  const perSectionHeightVh = 100;
+  const sectionBreakpoints = {
+    secondStartsAt: 0.1,
+    thirdStartsAt: 0.4,
+  };
 
-        <div className="absolute top-0 z-0 inset-0 h-screen w-screen items-center mx-auto">
-          <Image
-            src="/About/GradientBG.png"
-            alt="Gradient Background"
-            fill
-            quality={100}
-            priority
-            unoptimized
-            draggable={false}
-            className="object-cover grayscale-0 hue-rotate-0 brightness-120 pointer-events-none select-none"
-          />
-        </div>
+  const marqueeText = [
+    "what make me alive",
+    "·",
+    "programming experiences",
+    "·",
+  ];
 
+  const aboutSections = useMemo(
+    () => [
+      {
+        title: "About Me",
+        content: (
+          <div className="space-y-6 rounded-lg p-8">
+            <p className=" text-zinc-900 leading-relaxed">{about.bio}</p>
 
-        <div className="relative top-0 z-10 flex-1 flex items-end select-none overflow-hidden">
-          <div className={`relative bottom-0 z-10 w-full`}>
-            <TerminalAnimation />
-          </div>
-        </div>
-        <div className="flex-1 z-20">
-          <h2 className="text-4xl font-bold text-zinc-900 mb-8 text-center">
-            About Me
-          </h2>
-          <div className="bg-zinc-100 rounded-lg p-8 shadow-lg">
-            <p className="text-lg text-zinc-600 mb-6 leading-relaxed">
-              {about.bio}
-            </p>
             <div className="space-y-3">
               {about.highlights.map((highlight, index) => (
                 <div key={index} className="flex items-start gap-3">
-                  <span className="text-zinc-600 text-xl">✓</span>
-                  <p className="text-zinc-600">{highlight}</p>
+                  <span className="text-zinc-900">✓</span>
+                  <p className="text-zinc-900">{highlight}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        ),
+      },
+      {
+        title: "My Process",
+        content: (
+          <div className="space-y-5 rounded-lg p-8 text-zinc-900">
+            <p className="leading-relaxed">
+              Gosto de transformar ideia em interface com foco em motion,
+              performance e narrativa visual.
+            </p>
+            <p className="leading-relaxed">
+              Esse bloco aceita qualquer JSX: texto, imagem, vídeo, cards ou
+              até um componente inteiro.
+            </p>
+            <div className="rounded-xl border border-zinc-900/20 bg-zinc-900/5 p-4">
+              Area pronta para inserir imagem/componente customizado.
+            </div>
+          </div>
+        ),
+      },
+      {
+        title: "What I Build",
+        content: (
+          <div className="space-y-5 rounded-lg p-8 text-zinc-900">
+            <p className="leading-relaxed">
+              Projetos interativos com identidade forte, animações bem
+              calibradas e experiencia fluida em desktop/mobile.
+            </p>
+            <p className="leading-relaxed">
+              Para adicionar mais setores, basta inserir um novo objeto no array
+              aboutSections.
+            </p>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sectionEl = sectionRef.current;
+      if (!sectionEl) return;
+
+      const rect = sectionEl.getBoundingClientRect();
+      const maxScrollable = rect.height - window.innerHeight;
+      const progress =
+        maxScrollable <= 0
+          ? 0
+          : Math.min(Math.max((-rect.top / maxScrollable), 0), 1);
+
+      let next = 0;
+      if (progress >= sectionBreakpoints.thirdStartsAt) {
+        next = 2;
+      } else if (progress >= sectionBreakpoints.secondStartsAt) {
+        next = 1;
+      }
+
+      next = Math.min(next, aboutSections.length - 1);
+
+      setActiveSection((prev) => (prev === next ? prev : next));
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [aboutSections.length]);
+
+  return (
+    <section
+      id="about"
+      ref={sectionRef}
+      className="relative z-0 bg-[#e9e9e9]"
+      style={{ height: `${(aboutSections.length + 2) * perSectionHeightVh}vh` }}
+    >
+
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <div className="w-full overflow-hidden select-none">
+          <div className="marquee-track flex w-max items-center gap-[1em] font-herkey leading-[.8] uppercase font-extralight text-[#0a0a0a] text-[20em]">
+            {[...marqueeText, ...marqueeText].map((item, index) => (
+              <span key={`${item}-${index}`} className="whitespace-nowrap">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex px-4 py-16">
+          <div className="relative top-0 z-10 flex-1 flex items-end select-none overflow-hidden">
+
+          </div>
+
+          <div className="flex-1 flex flex-col items-start justify-start font-nicholas">
+            <div className="relative w-full h-full">
+              {aboutSections.map((section, index) => (
+                <article
+                  key={section.title}
+                  className={`absolute inset-0 text-[1.5em] ${
+                    activeSection === index
+                      ? "pointer-events-auto"
+                      : "pointer-events-none"
+                  }`}
+                >
+                  <h2
+                    className={`text-[5em] leading-[.5em] text-zinc-900 transition-all duration-700 ease-out ${
+                      activeSection === index
+                        ? "opacity-100 translate-x-0"
+                        : "opacity-0 -translate-x-10"
+                    }`}
+                  >
+                    {section.title}
+                  </h2>
+                  <hr className="my-6 border-zinc-900 w-full" />
+                  <div
+                    className={`relative z-10 transition-all duration-700 delay-100 ease-out ${
+                      activeSection === index
+                        ? "opacity-100"
+                        : "opacity-0"
+                    }`}
+                  >
+                    {section.content}
+                  </div>
+                </article>
               ))}
             </div>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+          .marquee-track {
+            animation: about-marquee 40s linear infinite;
+          }
+
+          @keyframes about-marquee {
+            from {
+              transform: translateX(0);
+            }
+            to {
+              transform: translateX(-50%);
+            }
+          }
+        `}</style>
     </section>
   );
 }
