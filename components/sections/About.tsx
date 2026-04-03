@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useMemo, useRef, useState } from "react";
 import { about } from "@/data/portfolio";
+import AboutOrb3D from "../ui/AboutOrb3D";
 
 export default function About() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -116,8 +117,8 @@ export default function About() {
       style={{ height: `${(aboutSections.length + 2) * perSectionHeightVh}vh` }}
     >
 
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <div className="w-full overflow-hidden select-none">
+      <div className="sticky top-0 h-screen overflow-visible">
+        <div className="w-full select-none overflow-visible">
           <div className="marquee-track flex w-max items-center gap-[1em] font-herkey leading-[.8] uppercase font-extralight text-[#0a0a0a] text-[20em]">
             {[...marqueeText, ...marqueeText].map((item, index) => (
               <span key={`${item}-${index}`} className="whitespace-nowrap">
@@ -127,12 +128,12 @@ export default function About() {
           </div>
         </div>
 
-        <div className="flex px-4 py-16">
-          <div className="relative top-0 z-10 flex-1 flex items-end select-none overflow-hidden">
-
+        <div className="flex px-4 py-16 overflow-visible">
+          <div className="relative top-0 z-10 flex flex-1 items-end overflow-visible select-none">
+            <AboutOrb3D />
           </div>
 
-          <div className="flex-1 flex flex-col items-start justify-start font-nicholas">
+          <div className="flex-1 flex flex-col z-50 items-start justify-start font-nicholas">
             <div className="relative w-full h-full">
               {aboutSections.map((section, index) => (
                 <article
