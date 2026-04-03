@@ -54,24 +54,24 @@ export default function TerminalAnimation() {
 
     return (
         <div className="font-sk-modernist tracking-[.12em] text-[1rem] md:text-[1.2rem] lg:text-[1.3rem] 
-        xl:text-[1.5rem] m-3 md:m-10 backdrop-blur-md border border-white/20 rounded-2xl py-6 px-2 md:px-6 
-        w-full max-w-[90vw] lg:max-w-[40vw]">
+        xl:text-[1.5rem] m-3 md:m-10 backdrop-blur-md border border-zinc-100 rounded-2xl py-6 px-2 md:px-6 
+        w-full max-w-[90vw] lg:max-w-[40vw] text-zinc-100">
 
             <div className="flex flex-col-reverse space-y-reverse space-y-3">
                 {currentLine >= commands.length && (
                     <div className="cursor-magnetic flex items-center gap-1 px-5 mix-blend-difference rounded-3xl break-words flex-wrap">
-                        <span className="">nath@MyDescktop:</span>
-                        <span className="">~</span>
-                        {showCursor && <span className="">▌</span>}
+                        <span className="text-zinc-100">nath@MyDescktop:</span>
+                        <span className="text-zinc-100">~</span>
+                        {showCursor && <span className="text-zinc-100">▌</span>}
                     </div>
                 )}
 
                 {currentLine < commands.length && (
                     <div className="cursor-magnetic flex items-center gap-1 px-5 mix-blend-difference rounded-3xl break-words flex-wrap">
-                        <span className="">nath@MyDescktop:</span>
-                        <span className="">~</span>
+                        <span className="text-zinc-100">nath@MyDescktop:</span>
+                        <span className="text-zinc-100">~</span>
                         <span className="break-all">{currentText}</span>
-                        {showCursor && <span className="">▌</span>}
+                        {showCursor && <span className="text-zinc-100">▌</span>}
                     </div>
                 )}
 
@@ -82,7 +82,7 @@ export default function TerminalAnimation() {
                             <span className="shrink-0">~</span>
                             <span className="break-all overflow-wrap-anywhere">{cmd.command}</span>
                         </div>
-                        <div className="text-white/70 break-words overflow-wrap-anywhere">{cmd.output}</div>
+                        <div className="text-zinc-100 break-words overflow-wrap-anywhere">{cmd.output}</div>
                     </div>
                 ))}
             </div>
