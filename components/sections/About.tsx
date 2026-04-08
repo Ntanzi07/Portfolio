@@ -25,13 +25,13 @@ export default function About() {
         title: "About Me",
         content: (
           <div className="space-y-6 rounded-lg p-8">
-            <p className=" text-zinc-900 leading-relaxed">{about.bio}</p>
+            <p className=" text-zinc-100 leading-relaxed">{about.bio}</p>
 
             <div className="space-y-3">
               {about.highlights.map((highlight, index) => (
                 <div key={index} className="flex items-start gap-3">
-                  <span className="text-zinc-900">✓</span>
-                  <p className="text-zinc-900">{highlight}</p>
+                  <span className="text-zinc-100">✓</span>
+                  <p className="text-zinc-100">{highlight}</p>
                 </div>
               ))}
             </div>
@@ -41,7 +41,7 @@ export default function About() {
       {
         title: "My Process",
         content: (
-          <div className="space-y-5 rounded-lg p-8 text-zinc-900">
+          <div className="space-y-5 rounded-lg p-8 text-zinc-100">
             <p className="leading-relaxed">
               Gosto de transformar ideia em interface com foco em motion,
               performance e narrativa visual.
@@ -50,7 +50,7 @@ export default function About() {
               Esse bloco aceita qualquer JSX: texto, imagem, vídeo, cards ou
               até um componente inteiro.
             </p>
-            <div className="rounded-xl border border-zinc-900/20 bg-zinc-900/5 p-4">
+            <div className="rounded-xl border border-zinc-100/20 bg-zinc-100/5 p-4">
               Area pronta para inserir imagem/componente customizado.
             </div>
           </div>
@@ -59,7 +59,7 @@ export default function About() {
       {
         title: "What I Build",
         content: (
-          <div className="space-y-5 rounded-lg p-8 text-zinc-900">
+          <div className="space-y-5 rounded-lg p-8 text-zinc-100">
             <p className="leading-relaxed">
               Projetos interativos com identidade forte, animações bem
               calibradas e experiencia fluida em desktop/mobile.
@@ -113,24 +113,34 @@ export default function About() {
     <section
       id="about"
       ref={sectionRef}
-      className="relative z-0 bg-[#e9e9e9]"
+      className="relative z-0 bg-[#0a0a0a] "
       style={{ height: `${(aboutSections.length + 2) * perSectionHeightVh}vh` }}
     >
 
       <div className="sticky top-0 h-screen overflow-visible">
-        <div className="w-full select-none overflow-visible">
-          <div className="marquee-track flex w-max items-center gap-[1em] font-herkey leading-[.8] uppercase font-extralight text-[#0a0a0a] text-[20em]">
+        <div className="relative top-0 z-1 flex flex-1 isolate items-end overflow-visible select-none">
+          <AboutOrb3D />
+        </div>
+
+        {/* <div className="relative z-20 w-full select-none overflow-visible ">
+          <div className="marquee-track flex w-max items-center gap-[1em] font-herkey leading-[.8] uppercase font-extralight text-black text-[20em]">
             {[...marqueeText, ...marqueeText].map((item, index) => (
               <span key={`${item}-${index}`} className="whitespace-nowrap">
                 {item}
               </span>
             ))}
           </div>
+        </div> */}
+
+        
+        <div className="relative  h-[25%] w-screen select-none ">
+          
         </div>
 
-        <div className="flex px-4 py-16 overflow-visible">
-          <div className="relative top-0 z-10 flex flex-1 items-end overflow-visible select-none">
-            <AboutOrb3D />
+
+        <div className="relative z-20 flex px-4 py-16 overflow-visible">
+          <div className="relative flex-1">
+    
           </div>
 
           <div className="flex-1 flex flex-col z-50 items-start justify-start font-nicholas">
@@ -138,28 +148,25 @@ export default function About() {
               {aboutSections.map((section, index) => (
                 <article
                   key={section.title}
-                  className={`absolute inset-0 text-[1.5em] ${
-                    activeSection === index
+                  className={`absolute inset-0 text-[1.5em] ${activeSection === index
                       ? "pointer-events-auto"
                       : "pointer-events-none"
-                  }`}
+                    }`}
                 >
                   <h2
-                    className={`text-[5em] leading-[.5em] text-zinc-900 transition-all duration-700 ease-out ${
-                      activeSection === index
+                    className={`text-[5em] leading-[.5em] text-zinc-100 transition-all duration-700 ease-out ${activeSection === index
                         ? "opacity-100 translate-x-0"
                         : "opacity-0 -translate-x-10"
-                    }`}
+                      }`}
                   >
                     {section.title}
                   </h2>
-                  <hr className="my-6 border-zinc-900 w-full" />
+                  <hr className="my-6 border-zinc-100 w-full" />
                   <div
-                    className={`relative z-10 transition-all duration-700 delay-100 ease-out ${
-                      activeSection === index
+                    className={`relative z-10 transition-all duration-700 delay-100 ease-out ${activeSection === index
                         ? "opacity-100"
                         : "opacity-0"
-                    }`}
+                      }`}
                   >
                     {section.content}
                   </div>
